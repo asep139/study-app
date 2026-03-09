@@ -11,20 +11,8 @@ class StudyApp extends StatefulWidget {
 }
 
 class _StudyAppState extends State<StudyApp> {
-  ThemeMode _themeMode = ThemeMode.system;
-
-  void _setThemeMode(ThemeMode mode) {
-    setState(() {
-      _themeMode = mode;
-    });
-  }
-
-  void _toggleTheme() {
-    setState(() {
-      _themeMode =
-          _themeMode == ThemeMode.light ? ThemeMode.dark : ThemeMode.light;
-    });
-  }
+  // ThemeMode _themeMode = ThemeMode.system
+  ThemeMode _themeMode = ThemeMode.light;
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +25,7 @@ class _StudyAppState extends State<StudyApp> {
       darkTheme: AppTheme.darkTheme,
       themeMode: _themeMode,
 
-      initialRoute: AppRoutes.test,
+      initialRoute: AppRoutes.splash,
       // Routes are still needed for navigation from the dashboard
       onGenerateRoute: AppRoutes.generateRoute,
 

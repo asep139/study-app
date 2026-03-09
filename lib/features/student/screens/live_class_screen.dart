@@ -300,7 +300,7 @@ class _LiveClassScreenState extends State<LiveClassScreen> {
               gradient: LinearGradient(
                 colors: [
                   colorScheme.primaryContainer,
-                  colorScheme.primaryContainer.withOpacity(0.3),
+                  colorScheme.primaryContainer.withAlpha(77),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,

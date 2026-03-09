@@ -43,8 +43,6 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
@@ -86,7 +84,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
         icon: Container(
           padding: const EdgeInsets.all(AppSizes.xs),
           decoration: BoxDecoration(
-            color: colorScheme.surface.withOpacity(0.8),
+            color: colorScheme.surface.withAlpha(204),
             shape: BoxShape.circle,
           ),
           child: Icon(
@@ -104,7 +102,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
           icon: Container(
             padding: const EdgeInsets.all(AppSizes.xs),
             decoration: BoxDecoration(
-              color: colorScheme.surface.withOpacity(0.8),
+              color: colorScheme.surface.withAlpha(204),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -123,7 +121,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
           icon: Container(
             padding: const EdgeInsets.all(AppSizes.xs),
             decoration: BoxDecoration(
-              color: colorScheme.surface.withOpacity(0.8),
+              color: colorScheme.surface.withAlpha(204),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -140,7 +138,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
             gradient: LinearGradient(
               colors: [
                 colorScheme.primaryContainer,
-                colorScheme.primaryContainer.withOpacity(0.3),
+                colorScheme.primaryContainer.withAlpha(77),
               ],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
@@ -210,7 +208,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen>
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.05),
+            color: colorScheme.shadow.withAlpha(12),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -347,7 +345,6 @@ class _OverviewTab extends StatelessWidget {
 
   Widget _buildStatsRow(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: const EdgeInsets.all(AppSizes.md),
@@ -932,7 +929,6 @@ class _TeacherTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(AppSizes.md),
@@ -955,16 +951,16 @@ class _TeacherTab extends StatelessWidget {
                 const SizedBox(height: AppSizes.md),
                 Text(
                   course.teacher?.name ?? 'Teacher',
-                  style: textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
                 const SizedBox(height: AppSizes.xs),
                 Text(
                   'Expert Instructor',
-                  style: textTheme.bodyMedium?.copyWith(
-                    color: colorScheme.onSurfaceVariant,
-                  ),
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.onSurfaceVariant,
+                      ),
                 ),
                 const SizedBox(height: AppSizes.md),
                 Row(
@@ -986,19 +982,19 @@ class _TeacherTab extends StatelessWidget {
           // Bio
           Text(
             'About',
-            style: textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w600,
-            ),
+            style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w600,
+                ),
           ),
           const SizedBox(height: AppSizes.sm),
           Text(
             'An experienced instructor with over 10 years of teaching experience. '
             'Passionate about helping students achieve their learning goals through '
             'practical, hands-on instruction.',
-            style: textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              height: 1.6,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                  height: 1.6,
+                ),
           ),
           
           const SizedBox(height: AppSizes.lg),

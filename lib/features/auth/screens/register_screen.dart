@@ -44,6 +44,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       setState(() => _isLoading = true);
       // Simulate registration
       Future.delayed(const Duration(seconds: 1), () {
+        if (!mounted) return;
         setState(() => _isLoading = false);
         Navigator.of(context).pushReplacementNamed(
           _selectedRole == 'student' ? '/student-dashboard' : '/teacher-dashboard',
@@ -339,7 +340,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
         decoration: BoxDecoration(
           color: isSelected
-              ? colorScheme.primaryContainer.withOpacity(0.3)
+              ? colorScheme.primaryContainer.withAlpha(77)
               : colorScheme.surfaceContainerHighest,
           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
           border: Border.all(

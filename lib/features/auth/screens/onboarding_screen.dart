@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:myapp/core/constants/app_colors.dart';
 import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/buttons/primary_button.dart';
 
 /// Modern onboarding screen with page indicators
@@ -16,35 +16,21 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   int _currentPage = 0;
 
   final List<OnboardingPage> _pages = [
-    OnboardingPage(
-      icon: Icons.menu_book_rounded,
-      title: 'Learn Anything',
-      subtitle: 'Access thousands of courses from expert freelance teachers',
-      gradient: const LinearGradient(
-        colors: [Color(0xFF6C63FF), Color(0xFF9B94FF)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+    const OnboardingPage(
+        icon: Icons.person_search_rounded,
+        title: 'Find a Tutor.',
+        subtitle:
+            'Search tutor based on specific topics and learn exactly what you need.'),
+    const OnboardingPage(
+      icon: Icons.check_box_rounded,
+      title: 'Choose your tutor',
+      subtitle:
+          'Browse Tutor profiles, experience, and reviews to find the best match for you',
     ),
-    OnboardingPage(
-      icon: Icons.person_search_rounded,
-      title: 'Choose Your Tutor',
-      subtitle: 'Browse profiles, reviews, and find the teacher that fits your style',
-      gradient: const LinearGradient(
-        colors: [Color(0xFFFF6B6B), Color(0xFFFF8A8A)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
-    ),
-    OnboardingPage(
-      icon: Icons.schedule_rounded,
-      title: 'Learn at Your Pace',
-      subtitle: 'Live classes, recorded sessions, or 1-on-1 tutoring - you decide',
-      gradient: const LinearGradient(
-        colors: [Color(0xFF4ECDC4), Color(0xFF7EDDD7)],
-        begin: Alignment.topLeft,
-        end: Alignment.bottomRight,
-      ),
+    const OnboardingPage(
+      icon: Icons.book,
+      title: 'Learna anything',
+      subtitle: 'Keep learning no matter how hard it is',
     ),
   ];
 
@@ -69,8 +55,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     _navigateToNext();
   }
 
+//after the introduction of the app, then this will be showing the next page
   void _navigateToNext() {
-    Navigator.of(context).pushReplacementNamed('/role-selection');
+    Navigator.of(context).pushReplacementNamed('/login_screen');
   }
 
   @override
@@ -78,92 +65,98 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
 
-    return Scaffold(
-      backgroundColor: colorScheme.surface,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // Skip Button
-            Align(
-              alignment: Alignment.topRight,
-              child: Padding(
-                padding: const EdgeInsets.all(AppSizes.md),
-                child: TextButton(
-                  onPressed: _skip,
-                  child: Text(
-                    'Skip',
-                    style: TextStyle(
-                      color: colorScheme.onSurfaceVariant,
-                      fontWeight: FontWeight.w500,
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: AppColors.primaryGradient,
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Skip Button
+              Align(
+                alignment: Alignment.topRight,
+                child: Padding(
+                  padding: const EdgeInsets.all(AppSizes.md),
+                  child: TextButton(
+                    onPressed: _skip,
+                    child: Text(
+                      'Skip',
+                      style: TextStyle(
+                        color: colorScheme.onSurface,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            
-            // Page View
-            Expanded(
-              child: PageView.builder(
-                controller: _pageController,
-                onPageChanged: (index) {
-                  setState(() => _currentPage = index);
-                },
-                itemCount: _pages.length,
-                itemBuilder: (context, index) {
-                  return _buildPage(_pages[index]);
-                },
+
+              // Page View
+              Expanded(
+                child: PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (index) {
+                    setState(() => _currentPage = index);
+                  },
+                  itemCount: _pages.length,
+                  itemBuilder: (context, index) {
+                    return _buildPage(_pages[index]);
+                  },
+                ),
               ),
-            ),
-            
-            // Page Indicators
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: AppSizes.lg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: List.generate(_pages.length, (index) {
-                  return AnimatedContainer(
-                    duration: const Duration(milliseconds: 300),
-                    margin: const EdgeInsets.symmetric(horizontal: 4),
-                    width: _currentPage == index ? 24 : 8,
-                    height: 8,
-                    decoration: BoxDecoration(
-                      color: _currentPage == index
-                          ? colorScheme.primary
-                          : colorScheme.onSurfaceVariant.withOpacity(0.3),
-                      borderRadius: BorderRadius.circular(AppSizes.radiusFull),
+
+              // Page Indicators
+              Padding(
+                padding: const EdgeInsets.symmetric(vertical: AppSizes.lg),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: List.generate(_pages.length, (index) {
+                    return AnimatedContainer(
+                      duration: const Duration(milliseconds: 300),
+                      margin: const EdgeInsets.symmetric(horizontal: 4),
+                      width: _currentPage == index ? 24 : 8,
+                      height: 8,
+                      decoration: BoxDecoration(
+                        color: _currentPage == index
+                            ? colorScheme.primary
+                            : colorScheme.onSurface.withOpacity(0.3),
+                        borderRadius:
+                            BorderRadius.circular(AppSizes.radiusFull),
+                      ),
+                    );
+                  }),
+                ),
+              ),
+
+              // Action Buttons
+              Padding(
+                padding: const EdgeInsets.all(AppSizes.lg),
+                child: Column(
+                  children: [
+                    PrimaryButton(
+                      text: _currentPage == _pages.length - 1
+                          ? 'Get Started'
+                          : 'Next',
+                      onPressed: _nextPage,
                     ),
-                  );
-                }),
-              ),
-            ),
-            
-            // Action Buttons
-            Padding(
-              padding: const EdgeInsets.all(AppSizes.lg),
-              child: Column(
-                children: [
-                  PrimaryButton(
-                    text: _currentPage == _pages.length - 1
-                        ? 'Get Started'
-                        : 'Next',
-                    onPressed: _nextPage,
-                  ),
-                  if (_currentPage < _pages.length - 1) ...[
-                    const SizedBox(height: AppSizes.md),
-                    TextButton(
-                      onPressed: _skip,
-                      child: Text(
-                        'Skip for now',
-                        style: TextStyle(
-                          color: colorScheme.onSurfaceVariant,
+                    if (_currentPage < _pages.length - 1) ...[
+                      const SizedBox(height: AppSizes.md),
+                      TextButton(
+                        onPressed: _skip,
+                        child: Text(
+                          'Skip for now',
+                          style: TextStyle(
+                            color: colorScheme.onSurfaceVariant,
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ],
-                ],
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
@@ -180,14 +173,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         children: [
           // Icon Container
           Container(
-            width: 160,
-            height: 160,
+            width: 150,
+            height: 150,
             decoration: BoxDecoration(
-              gradient: page.gradient,
+              color: Colors.white,
               shape: BoxShape.circle,
+              border: Border.all(color: AppColors.primary, width: 7),
               boxShadow: [
                 BoxShadow(
-                  color: (page.gradient.colors.first).withOpacity(0.3),
+                  color: AppColors.primary.withOpacity(0.3),
                   blurRadius: 40,
                   offset: const Offset(0, 20),
                 ),
@@ -196,31 +190,40 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
             child: Icon(
               page.icon,
               size: 72,
-              color: Colors.white,
+              color: AppColors.primary,
             ),
           ),
-          
+
           const SizedBox(height: AppSizes.xxl),
-          
+
           // Title
-          Text(
+          GradientText(
             page.title,
-            style: theme.textTheme.displaySmall?.copyWith(
-              fontWeight: FontWeight.w700,
-              color: colorScheme.onSurface,
+            gradient: const LinearGradient(
+              colors: [
+                Color(0xFF1479FF),
+                Color(0xFF147EFF),
+                Color(0xFF149AFF),
+              ],
+              stops: [0.0, 0.46, 1.0],
+              begin: Alignment.centerLeft,
+              end: Alignment.centerRight,
             ),
+            style: theme.textTheme.displaySmall
+                ?.copyWith(fontWeight: FontWeight.bold, fontSize: 40),
             textAlign: TextAlign.center,
           ),
-          
+
           const SizedBox(height: AppSizes.md),
-          
+
           // Subtitle
           Text(
             page.subtitle,
             style: theme.textTheme.bodyLarge?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              height: 1.6,
-            ),
+                color: colorScheme.onSurfaceVariant,
+                height: 1.6,
+                fontSize: 16,
+                fontWeight: FontWeight.w100),
             textAlign: TextAlign.center,
           ),
         ],
@@ -233,12 +236,40 @@ class OnboardingPage {
   final IconData icon;
   final String title;
   final String subtitle;
-  final LinearGradient gradient;
 
   const OnboardingPage({
     required this.icon,
     required this.title,
     required this.subtitle,
-    required this.gradient,
   });
+}
+
+class GradientText extends StatelessWidget {
+  const GradientText(
+    this.text, {
+    super.key,
+    required this.gradient,
+    this.style,
+    this.textAlign,
+  });
+
+  final String text;
+  final TextStyle? style;
+  final Gradient gradient;
+  final TextAlign? textAlign;
+
+  @override
+  Widget build(BuildContext context) {
+    return ShaderMask(
+      blendMode: BlendMode.srcIn,
+      shaderCallback: (bounds) => gradient.createShader(
+        Rect.fromLTWH(0, 0, bounds.width, bounds.height),
+      ),
+      child: Text(
+        text,
+        style: style,
+        textAlign: textAlign,
+      ),
+    );
+  }
 }

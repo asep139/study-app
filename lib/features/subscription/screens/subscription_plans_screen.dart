@@ -154,7 +154,7 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
               gradient: LinearGradient(
                 colors: [
                   colorScheme.primary,
-                  colorScheme.primary.withOpacity(0.7),
+                  colorScheme.primary.withAlpha(179),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -212,7 +212,7 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                   boxShadow: !_isYearly
                       ? [
                           BoxShadow(
-                            color: colorScheme.shadow.withOpacity(0.1),
+                            color: colorScheme.shadow.withAlpha(26),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -243,7 +243,7 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
                   boxShadow: _isYearly
                       ? [
                           BoxShadow(
-                            color: colorScheme.shadow.withOpacity(0.1),
+                            color: colorScheme.shadow.withAlpha(26),
                             blurRadius: 4,
                             offset: const Offset(0, 2),
                           ),
@@ -310,7 +310,7 @@ class _SubscriptionPlansScreenState extends State<SubscriptionPlansScreen> {
         boxShadow: isSelected
             ? [
                 BoxShadow(
-                  color: colorScheme.primary.withOpacity(0.1),
+                  color: colorScheme.primary.withAlpha(26),
                   blurRadius: 20,
                   offset: const Offset(0, 8),
                 ),

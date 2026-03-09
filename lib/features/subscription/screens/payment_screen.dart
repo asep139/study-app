@@ -122,7 +122,7 @@ class _PaymentScreenState extends State<PaymentScreen> {
         gradient: LinearGradient(
           colors: [
             colorScheme.primaryContainer,
-            colorScheme.primaryContainer.withOpacity(0.3),
+            colorScheme.primaryContainer.withAlpha(77),
           ],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
@@ -229,7 +229,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildPaymentMethods(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     return Column(
@@ -335,7 +334,6 @@ class _PaymentScreenState extends State<PaymentScreen> {
   }
 
   Widget _buildCardForm(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
 
     return Padding(

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/constants/app_sizes.dart';
-import '../../../core/constants/app_strings.dart';
 import '../../../core/widgets/inputs/search_input.dart';
 import '../../../core/widgets/common/avatar_widget.dart';
 import '../../../data/dummy_data.dart';
@@ -41,7 +40,7 @@ class _TeacherDashboardState extends State<TeacherDashboard> {
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.05),
+            color: colorScheme.shadow.withAlpha(13),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -219,7 +218,7 @@ class _HomeTab extends StatelessWidget {
                 width: 40,
                 height: 40,
                 decoration: BoxDecoration(
-                  color: color.withOpacity(0.1),
+                  color: color.withAlpha(26),
                   borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                 ),
                 child: Icon(
@@ -476,7 +475,7 @@ class _HomeTab extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: iconColor.withOpacity(0.1),
+              color: iconColor.withAlpha(26),
               shape: BoxShape.circle,
             ),
             child: Icon(
@@ -560,7 +559,7 @@ class _HomeTab extends StatelessWidget {
             width: 56,
             height: 56,
             decoration: BoxDecoration(
-              color: (action['color'] as Color).withOpacity(0.1),
+              color: (action['color'] as Color).withAlpha(26),
               borderRadius: BorderRadius.circular(AppSizes.radiusMd),
             ),
             child: Icon(
@@ -855,7 +854,7 @@ class _EarningsTab extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     colorScheme.primary,
-                    colorScheme.primary.withOpacity(0.7),
+                    colorScheme.primary.withAlpha(179),
                   ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
@@ -868,7 +867,7 @@ class _EarningsTab extends StatelessWidget {
                   Text(
                     'Total Balance',
                     style: textTheme.bodyMedium?.copyWith(
-                      color: colorScheme.onPrimary.withOpacity(0.8),
+                      color: colorScheme.onPrimary.withAlpha(204),
                     ),
                   ),
                   const SizedBox(height: AppSizes.xs),
@@ -889,7 +888,7 @@ class _EarningsTab extends StatelessWidget {
                             Text(
                               'This Month',
                               style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onPrimary.withOpacity(0.7),
+                                color: colorScheme.onPrimary.withAlpha(179),
                               ),
                             ),
                             Text(
@@ -909,7 +908,7 @@ class _EarningsTab extends StatelessWidget {
                             Text(
                               'Pending',
                               style: textTheme.bodySmall?.copyWith(
-                                color: colorScheme.onPrimary.withOpacity(0.7),
+                                color: colorScheme.onPrimary.withAlpha(179),
                               ),
                             ),
                             Text(

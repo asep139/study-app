@@ -99,7 +99,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
               gradient: LinearGradient(
                 colors: [
                   colorScheme.primary,
-                  colorScheme.primary.withOpacity(0.7),
+                  colorScheme.primary.withAlpha(179),
                 ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
@@ -107,7 +107,7 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
               shape: BoxShape.circle,
               boxShadow: [
                 BoxShadow(
-                  color: colorScheme.primary.withOpacity(0.3),
+                  color: colorScheme.primary.withAlpha(77),
                   blurRadius: 30,
                   offset: const Offset(0, 10),
                 ),
@@ -165,7 +165,6 @@ class _PaymentSuccessScreenState extends State<PaymentSuccessScreen>
 
   Widget _buildTransactionDetails(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
 
     return Container(
       padding: const EdgeInsets.all(AppSizes.lg),

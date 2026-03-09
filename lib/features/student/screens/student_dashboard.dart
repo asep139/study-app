@@ -22,8 +22,6 @@ class _StudentDashboardState extends State<StudentDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Scaffold(
       body: IndexedStack(
         index: _currentIndex,
@@ -47,7 +45,7 @@ class _StudentDashboardState extends State<StudentDashboard> {
         color: colorScheme.surface,
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.05),
+            color: colorScheme.shadow.withAlpha(12),
             blurRadius: 20,
             offset: const Offset(0, -5),
           ),
@@ -105,8 +103,6 @@ class _HomeTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return SafeArea(
       child: SingleChildScrollView(
         child: Column(
@@ -262,11 +258,11 @@ class _HomeTab extends StatelessWidget {
     );
   }
 
-  Widget _buildContinueLearningCard(BuildContext context, CourseModel course) {
+  _buildContinueLearningCard(BuildContext context, CourseModel course) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
-    final progress = (index) => 0.3 + (index * 0.2);
+    final progress = (int index) => 0.3 + (index * 0.2);
 
     return Container(
       width: 280,
@@ -728,7 +724,7 @@ class _HomeTab extends StatelessWidget {
                   gradient: LinearGradient(
                     colors: [
                       colorScheme.primaryContainer,
-                      colorScheme.primaryContainer.withOpacity(0.5),
+                      colorScheme.primaryContainer.withAlpha(128),
                     ],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
@@ -1028,7 +1024,7 @@ class _ExploreTab extends StatelessWidget {
                         width: 44,
                         height: 44,
                         decoration: BoxDecoration(
-                          color: (category['color'] as Color).withOpacity(0.15),
+                          color: (category['color'] as Color).withAlpha(38),
                           borderRadius: BorderRadius.circular(AppSizes.radiusMd),
                         ),
                         child: Icon(
@@ -1076,7 +1072,7 @@ class _ExploreTab extends StatelessWidget {
                 gradient: LinearGradient(
                   colors: [
                     colorScheme.primaryContainer,
-                    colorScheme.primaryContainer.withOpacity(0.5),
+                    colorScheme.primaryContainer.withAlpha(128),
                   ],
                 ),
               ),
@@ -1350,7 +1346,7 @@ class _MyLearningTab extends StatelessWidget {
               width: 56,
               height: 56,
               decoration: BoxDecoration(
-                color: Colors.green.withOpacity(0.15),
+                color: Colors.green.withAlpha(38),
                 borderRadius: BorderRadius.circular(AppSizes.radiusMd),
               ),
               child: const Icon(Icons.check_circle_rounded, color: Colors.green),
@@ -1387,7 +1383,6 @@ class _MessagesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     final textTheme = Theme.of(context).textTheme;
     final teachers = DummyData.teachers;
 
@@ -1403,7 +1398,6 @@ class _MessagesTab extends StatelessWidget {
                   'Messages',
                   style: textTheme.headlineMedium?.copyWith(
                     fontWeight: FontWeight.w700,
-                    color: colorScheme.onSurface,
                   ),
                 ),
                 const SizedBox(height: AppSizes.md),
@@ -1531,7 +1525,6 @@ class _ProfileTab extends StatelessWidget {
               'Profile',
               style: textTheme.headlineMedium?.copyWith(
                 fontWeight: FontWeight.w700,
-                color: colorScheme.onSurface,
               ),
             ),
             const SizedBox(height: AppSizes.lg),
