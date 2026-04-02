@@ -54,11 +54,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   Future<void> _handleGoogleSignIn() async {
     try {
-      final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
-      if (googleUser != null) {
-        // Navigate to the next screen or handle the signed-in user
-        Navigator.of(context).pushReplacementNamed('/student-dashboard');
-      }
+      // final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      // if (googleUser != null) {
+      //   // Navigate to the next screen or handle the signed-in user
+      //   Navigator.of(context).pushReplacementNamed('/student-dashboard');
+      // }
     } catch (error) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
