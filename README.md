@@ -200,6 +200,282 @@ The API will be available at `http://localhost:3000`.
 
 <br/>
 
+## 📡 API Reference
+
+> **Base URL:** `http://localhost:3000`
+> **Auth:** Protected routes require `Authorization: Bearer <access_token>` in the header.
+
+---
+
+### 🔐 Auth — `/auth`
+
+#### `GET /auth`
+Health check for the auth route.
+
+```
+Response 200: "You're at the right path, continue!"
+```
+
+---
+
+#### `POST /auth/signup`
+Register a new user account.
+
+**Request Body:**
+```json
+{
+  "email": "john@example.com",
+  "password": "securepassword",
+  "role": "STUDENT"
+}
+```
+> `role` must be `"STUDENT"` or `"TUTOR"`
+
+**Response `201`:**
+```json
+{
+  "message": "Signup successful",
+  "access_token": "eyJhbGci...",
+  "user": {
+    "id": "uuid",
+    "email": "john@example.com",
+    "role": "STUDENT"
+  }
+}
+```
+
+---
+
+#### `POST /auth/login`
+Log in with email and password.
+
+**Request Body:**
+```json
+{
+  "email": "john@example.com",
+  "password": "securepassword"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "message": "Login successful",
+  "access_token": "eyJhbGci...",
+  "user": {
+    "id": "uuid",
+    "email": "john@example.com",
+    "role": "STUDENT"
+  }
+}
+```
+
+---
+
+#### `POST /auth/google`
+Sign in or register via Google OAuth.
+
+**Request Body:**
+```json
+{
+  "idToken": "google-id-token-from-client",
+  "role": "STUDENT"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "message": "Google login successful",
+  "access_token": "eyJhbGci...",
+  "user": {
+    "id": "uuid",
+    "email": "john@gmail.com",
+    "role": "STUDENT",
+    "full_name": "John Doe",
+    "avatar_url": "https://..."
+  }
+}
+```
+
+---
+
+### 👤 User — `/user`
+
+#### `GET /user/tutors/all`
+Returns all tutor profiles.
+
+```
+GET /user/tutors/all
+Response 200: [ { ...tutorProfile }, ... ]
+```
+
+---
+
+#### `GET /user/student`
+Returns all student profiles.
+
+```
+GET /user/student
+Response 200: [ { ...studentProfile }, ... ]
+```
+
+---
+
+#### `GET /user/tutors`
+Search and filter tutors.
+
+**Query Parameters:**
+
+| Param | Type | Description |
+|---|---|---|
+| `search` | `string` | Search by name or keyword |
+| `subject` | `string` | Filter by subject |
+| `maxPrice` | `number` | Max price per hour |
+
+```
+GET /user/tutors?search=math&subject=algebra&maxPrice=150000
+Response 200: [ { ...tutorProfile }, ... ]
+```
+
+---
+
+#### `GET /user/tutor/:id`
+Get detailed profile + offers for a single tutor.
+
+```
+GET /user/tutor/uuid-here
+Response 200: { ...tutorProfile, offers: [ ...tutorOffers ] }
+```
+
+---
+
+#### `PATCH /user/update/profile` 🔒 *Auth Required*
+Update the authenticated user's profile. All fields are optional.
+
+**Headers:**
+```
+Authorization: Bearer <access_token>
+Content-Type: application/json
+```
+
+**Request Body:**
+```json
+{
+  "full_name": "John Doe",
+  "username": "john_doe",
+  "bio": "Passionate math tutor with 5 years experience.",
+  "avatar_url": "https://example.com/avatar.png",
+  "role": "TUTOR"
+}
+```
+
+**Response `200`:**
+```json
+{
+  "message": "Profile updated",
+  "user": {
+    "id": "uuid",
+    "email": "john@example.com",
+    "full_name": "John Doe",
+    "username": "john_doe",
+    "bio": "Passionate math tutor with 5 years experience.",
+    "avatar_url": "https://example.com/avatar.png",
+    "role": "TUTOR"
+  }
+}
+```
+
+---
+
+### Implementing API Calls in Flutter
+
+The app uses a centralized service pattern. All user API calls go through `UserApiService` and all auth API calls manage state via `AuthState`.
+
+**File structure:**
+```
+lib/core/services/
+├── auth_state.dart        # Holds access_token, userId, role — use anywhere
+└── user_api_service.dart  # Global user API methods (updateProfile, etc.)
+```
+
+#### Using `updateProfile` anywhere in the app
+
+```dart
+import 'package:myapp/core/services/user_api_service.dart';
+
+// Call from any widget — no need to rewrite the HTTP logic
+final result = await UserApiService.instance.updateProfile(
+  username: 'john_doe',
+  fullName: 'John Doe',
+  bio: 'I love math',
+  role: 'STUDENT',         // or 'TUTOR'
+  avatarUrl: 'https://...', // optional
+);
+
+if (result.success) {
+  final updatedUser = result.user; // Map<String, dynamic>
+  print(updatedUser?['username']); // 'john_doe'
+} else {
+  print(result.errorMessage); // user-friendly error string
+}
+```
+
+#### Using `AuthState` for the JWT token
+
+`AuthState` is a singleton that holds the logged-in user's token and info. Set it once after login, read it anywhere.
+
+```dart
+import 'package:myapp/core/services/auth_state.dart';
+
+// After login — store the token
+AuthState.instance.setFromResponse(responseData); // pass the decoded JSON body
+
+// Read token info anywhere
+print(AuthState.instance.accessToken);
+print(AuthState.instance.role); // 'STUDENT' or 'TUTOR'
+print(AuthState.instance.isLoggedIn); // true / false
+
+// Get headers for authenticated requests
+final headers = AuthState.instance.authHeaders;
+// → { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJ...' }
+
+// Clear on logout
+AuthState.instance.clear();
+```
+
+#### Adding a new API method
+
+Follow this pattern when adding new endpoints to `UserApiService`:
+
+```dart
+// In lib/core/services/user_api_service.dart
+
+Future<SomeResult> getSomething(String id) async {
+  if (!AuthState.instance.isLoggedIn) {
+    return SomeResult.error('Not authenticated');
+  }
+
+  try {
+    final response = await http.get(
+      Uri.parse('${AppConfig.API_URL}/user/something/$id'),
+      headers: AuthState.instance.authHeaders,
+    );
+
+    final data = jsonDecode(response.body) as Map<String, dynamic>;
+
+    if (response.statusCode == 200) {
+      return SomeResult.success(data);
+    }
+    return SomeResult.error(data['message']?.toString() ?? 'Failed');
+  } catch (e) {
+    return SomeResult.error('Network error: $e');
+  }
+}
+```
+
+<br/>
+
 ## 🧪 Testing
 
 ### Backend Tests

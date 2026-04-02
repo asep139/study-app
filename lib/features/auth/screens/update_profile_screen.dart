@@ -1,9 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
 
-import '../../../core/constants/app_config.dart';
+import '../../../core/services/auth_state.dart';
+import '../../../core/services/user_api_service.dart';
 
 class UpdateProfileScreen extends StatefulWidget {
   const UpdateProfileScreen({super.key});
@@ -15,61 +13,61 @@ class UpdateProfileScreen extends StatefulWidget {
 class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
   final _formKey = GlobalKey<FormState>();
   final _usernameController = TextEditingController();
+  final _fullNameController = TextEditingController();
+  final _bioController = TextEditingController();
 
   bool _isLoading = false;
   String _selectedRole = 'STUDENT';
 
-  //* UPDATE PROFILE FUNCTION IS HERE!
-  // THIS IS A DANGEROUS ZONE, IF YOU DON'T KNOW WHAT YOUR DOING THEN DON'T TOUCH IT
-  // just pls don't touch this function
-  // todo: implement this method if we already got the new style, atleast we already make it
   Future<void> _updateProfile() async {
-    if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+    if (!_formKey.currentState!.validate()) return;
 
-      try {
-        // todo: we need to put the body here dog
-        final const RESPONSE = await post(
-          Uri.parse('${AppConfig.API_URL}/user/update/profile'),
-          headers: {'Content-Type': 'application/json'},
-          // body: jsonEncode({
-          //   ''
-          // })
-        );
+    setState(() => _isLoading = true);
 
-        if(!mounted) return;
-        final responseData = jsonDecode(RESPONSE.body);
-        print(responseData);
+    final result = await UserApiService.instance.updateProfile(
+      username: _usernameController.text.trim(),
+      fullName: _fullNameController.text.trim(),
+      bio: _bioController.text.trim(),
+      role: _selectedRole,
+    );
 
-        if(RESPONSE.statusCode == 200 || RESPONSE.statusCode == 201) {
-          ScaffoldMessenger.of(context).showSnackBar(
-           SnackBar(
-            content: Text("Nice!, Your profile has been updated"),
-            backgroundColor: Colors.green
-            ), 
-          );
+    if (!mounted) return;
+    setState(() => _isLoading = false);
 
-          // todo RE-ROUTE USER WHERE SHOULD IT GO, BASED ON THE USER ROLES
-          Navigator.of(context).pushReplacementNamed("/");
-        }
+    if (result.success) {
+      // Sync role into AuthState so the rest of the app sees the updated role
+      AuthState.instance.role = result.user?['role']?.toString();
 
-      } catch (e) {
-        if (!mounted) return;
-        print("Update Profile error (something error with the API): $e");
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Something went wrong. Please try again later.'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-      } finally {
-        if (mounted) setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text("Nice! Your profile has been updated."),
+          backgroundColor: Colors.green,
+        ),
+      );
+
+      final role = result.user?['role']?.toString();
+      if (role == 'TUTOR') {
+        Navigator.of(context).pushReplacementNamed('/teacher');
+      } else {
+        Navigator.of(context).pushReplacementNamed('/student');
       }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(result.errorMessage ?? 'Something went wrong.'),
+          backgroundColor: Colors.redAccent,
+        ),
+      );
     }
   }
-  //-------------------------------------
+
+  @override
+  void dispose() {
+    _usernameController.dispose();
+    _fullNameController.dispose();
+    _bioController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,21 +80,44 @@ class _UpdateProfileScreenState extends State<UpdateProfileScreen> {
           child: Column(
             children: [
               TextFormField(
+                controller: _fullNameController,
+                decoration: const InputDecoration(labelText: 'Full Name'),
+              ),
+              const SizedBox(height: 12),
+              TextFormField(
                 controller: _usernameController,
                 decoration: const InputDecoration(labelText: 'Username'),
+                validator: (val) =>
+                    (val == null || val.trim().isEmpty) ? 'Username is required' : null,
               ),
+              const SizedBox(height: 12),
+              TextFormField(
+                controller: _bioController,
+                decoration: const InputDecoration(labelText: 'Bio'),
+                maxLines: 3,
+              ),
+              const SizedBox(height: 12),
               DropdownButton<String>(
                 value: _selectedRole,
+                isExpanded: true,
                 items: ['STUDENT', 'TUTOR'].map((role) {
                   return DropdownMenuItem(value: role, child: Text(role));
                 }).toList(),
                 onChanged: (val) => setState(() => _selectedRole = val!),
               ),
-              ElevatedButton(
-                onPressed: () {
-                  // TODO: Hey friend, please implement the API logic here to save the profile
-                },
-                child: const Text('Update'),
+              const SizedBox(height: 24),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _isLoading ? null : _updateProfile,
+                  child: _isLoading
+                      ? const SizedBox(
+                          height: 20,
+                          width: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Update Profile'),
+                ),
               ),
             ],
           ),
