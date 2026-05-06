@@ -4,9 +4,11 @@
 
 # StudyApp
 
+> this app totally made with ❤️(dan orang orang terganteng dan tersigma, tergila, tergakwaras apalah gw ketik apaan awokawokaowkaowk gw bakalan kasih ini ke AI aja dah daripada ngawur aowkaokoawkoakw)
+
 ### Peer-to-Peer Tutoring Marketplace
 
-*Connect with expert tutors. Learn on your terms.*
+_Connect with expert tutors. Learn on your terms._
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
@@ -30,6 +32,7 @@
 **StudyApp** is a modern peer-to-peer tutoring marketplace that connects students directly with expert tutors. Students choose what to learn, who to learn from, and when — on their own terms.
 
 The app is split into two independent codebases:
+
 - **Flutter frontend** — cross-platform app (Android, iOS, Web)
 - **NestJS backend** — REST API backed by PostgreSQL on Supabase
 
@@ -168,53 +171,53 @@ study-app/
 
 #### ✅ Complete
 
-| Area | What's done |
-|---|---|
-| **Auth flow** | Full end-to-end: splash → onboarding → login/register → update profile → dashboard |
-| **Auth service** | Centralized `AuthService` — login, register, logout, mock mode for dev |
-| **Auth state** | `AuthState` singleton — stores JWT token, userId, email, role across the whole app |
-| **Mock mode** | `AppConfig.useMock = true` — screens work without a live backend for development |
-| **Login screen** | Email + password form, error display, loading state |
-| **Register screen** | Email + password + confirm, delegates to `AuthService` |
-| **Update profile** | Full name, username, bio, role picker — calls `UserApiService.updateProfile` |
-| **Student dashboard** | 5-tab nav: Home, Explore, Learning, Messages, Profile |
-| **Teacher dashboard** | 5-tab nav: Home, Courses, Students, Earnings, Profile |
-| **Chat UI** | Full chat detail screen with message list + input (UI only) |
-| **Subscription UI** | Plans screen (Free/Premium/Pro, monthly/yearly toggle) |
-| **Payment UI** | Payment method selection + order summary |
-| **Payment success** | Animated success screen |
-| **Shared widgets** | `PrimaryButton`, `TextInput`, `PasswordTextField`, `AvatarWidget`, `SearchInput` |
-| **Theme system** | Material 3, `AppColors`, `AppTypography`, `AppSizes` |
-| **Routing** | All named routes in `AppRoutes`, navigator helpers |
+| Area                  | What's done                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| **Auth flow**         | Full end-to-end: splash → onboarding → login/register → update profile → dashboard |
+| **Auth service**      | Centralized `AuthService` — login, register, logout, mock mode for dev             |
+| **Auth state**        | `AuthState` singleton — stores JWT token, userId, email, role across the whole app |
+| **Mock mode**         | `AppConfig.useMock = true` — screens work without a live backend for development   |
+| **Login screen**      | Email + password form, error display, loading state                                |
+| **Register screen**   | Email + password + confirm, delegates to `AuthService`                             |
+| **Update profile**    | Full name, username, bio, role picker — calls `UserApiService.updateProfile`       |
+| **Student dashboard** | 5-tab nav: Home, Explore, Learning, Messages, Profile                              |
+| **Teacher dashboard** | 5-tab nav: Home, Courses, Students, Earnings, Profile                              |
+| **Chat UI**           | Full chat detail screen with message list + input (UI only)                        |
+| **Subscription UI**   | Plans screen (Free/Premium/Pro, monthly/yearly toggle)                             |
+| **Payment UI**        | Payment method selection + order summary                                           |
+| **Payment success**   | Animated success screen                                                            |
+| **Shared widgets**    | `PrimaryButton`, `TextInput`, `PasswordTextField`, `AvatarWidget`, `SearchInput`   |
+| **Theme system**      | Material 3, `AppColors`, `AppTypography`, `AppSizes`                               |
+| **Routing**           | All named routes in `AppRoutes`, navigator helpers                                 |
 
 #### 🔄 In Progress (branch: `api/expanding-the-api`)
 
-| Task | Status |
-|---|---|
-| Centralized `AuthService` refactor | ✅ done on this branch — replacing inline HTTP calls in screens |
-| `AppConfig` mock/live toggle | ✅ done — `useMock` flag for dev without backend |
-| Wiring auth screens to `AuthService` | ✅ login, register, update profile all use it |
-| Student dashboard API integration | 🔄 in progress — real tutor data from `GET /user/tutors/all` |
+| Task                                 | Status                                                          |
+| ------------------------------------ | --------------------------------------------------------------- |
+| Centralized `AuthService` refactor   | ✅ done on this branch — replacing inline HTTP calls in screens |
+| `AppConfig` mock/live toggle         | ✅ done — `useMock` flag for dev without backend                |
+| Wiring auth screens to `AuthService` | ✅ login, register, update profile all use it                   |
+| Student dashboard API integration    | 🔄 in progress — real tutor data from `GET /user/tutors/all`    |
 
 #### 🔲 Todo (App)
 
-| Priority | Task |
-|---|---|
-| High | Wire student dashboard to live API (tutor browse, search, filter) |
-| High | Google Sign-In integration on login screen |
-| High | `AuthState` persistence — survive app kill/restart (SharedPreferences or secure storage) |
-| High | Tutor detail screen — show profile + offers from `GET /user/tutor/:id` |
-| High | Booking flow — select offer → confirm → payment |
-| Medium | Chat API integration — send/receive real messages |
-| Medium | Teacher dashboard API integration — show real bookings, students |
-| Medium | Profile screen — display and edit own profile |
-| Medium | Subscription backend integration |
-| Medium | Tutor availability management (teacher side) |
-| Low | Push notifications |
-| Low | Review/rating UI |
-| Low | Offline mode / error states |
-| Low | Dark mode |
-| Low | iOS build testing |
+| Priority | Task                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| High     | Wire student dashboard to live API (tutor browse, search, filter)                        |
+| High     | Google Sign-In integration on login screen                                               |
+| High     | `AuthState` persistence — survive app kill/restart (SharedPreferences or secure storage) |
+| High     | Tutor detail screen — show profile + offers from `GET /user/tutor/:id`                   |
+| High     | Booking flow — select offer → confirm → payment                                          |
+| Medium   | Chat API integration — send/receive real messages                                        |
+| Medium   | Teacher dashboard API integration — show real bookings, students                         |
+| Medium   | Profile screen — display and edit own profile                                            |
+| Medium   | Subscription backend integration                                                         |
+| Medium   | Tutor availability management (teacher side)                                             |
+| Low      | Push notifications                                                                       |
+| Low      | Review/rating UI                                                                         |
+| Low      | Offline mode / error states                                                              |
+| Low      | Dark mode                                                                                |
+| Low      | iOS build testing                                                                        |
 
 ---
 
@@ -222,16 +225,16 @@ study-app/
 
 See [`_server/README.md`](./_server/README.md) for full details.
 
-| Module | Status |
-|---|---|
-| Auth (signup, login, Google OAuth) | ✅ Complete |
-| User profiles (CRUD, tutor search/filter) | ✅ Complete |
-| Unit tests — 62 tests, 5 suites | ✅ All passing |
-| Booking module | 🔲 Not started |
-| Chat/messaging module | 🔲 Not started |
-| Subscription module | 🔲 Not started |
-| Review module | 🔲 Not started |
-| Notification module | 🔲 Not started |
+| Module                                    | Status         |
+| ----------------------------------------- | -------------- |
+| Auth (signup, login, Google OAuth)        | ✅ Complete    |
+| User profiles (CRUD, tutor search/filter) | ✅ Complete    |
+| Unit tests — 62 tests, 5 suites           | ✅ All passing |
+| Booking module                            | 🔲 Not started |
+| Chat/messaging module                     | 🔲 Not started |
+| Subscription module                       | 🔲 Not started |
+| Review module                             | 🔲 Not started |
+| Notification module                       | 🔲 Not started |
 
 ---
 
@@ -239,49 +242,49 @@ See [`_server/README.md`](./_server/README.md) for full details.
 
 ### Frontend — Flutter (Dart)
 
-| Tool | Purpose |
-|---|---|
-| **Flutter 3.5+** | Cross-platform UI framework |
-| **Dart** | Language |
-| **HTTP** | REST API calls |
-| **Google Sign-In** | OAuth |
-| **Google Fonts** | Typography |
-| **Font Awesome Flutter** | Icons |
-| **Material 3** | Design system |
+| Tool                     | Purpose                     |
+| ------------------------ | --------------------------- |
+| **Flutter 3.5+**         | Cross-platform UI framework |
+| **Dart**                 | Language                    |
+| **HTTP**                 | REST API calls              |
+| **Google Sign-In**       | OAuth                       |
+| **Google Fonts**         | Typography                  |
+| **Font Awesome Flutter** | Icons                       |
+| **Material 3**           | Design system               |
 
 ### Backend — NestJS (TypeScript)
 
-| Tool | Purpose |
-|---|---|
-| **NestJS** | Modular Node.js framework |
-| **TypeScript** | Language |
-| **Prisma ORM** | Type-safe DB access + migrations |
-| **PostgreSQL** | Database (hosted on Supabase) |
-| **argon2** | Password hashing |
-| **JWT** | Stateless authentication |
-| **Passport** | JWT strategy + guards |
-| **Jest + ts-jest** | Unit testing |
+| Tool               | Purpose                          |
+| ------------------ | -------------------------------- |
+| **NestJS**         | Modular Node.js framework        |
+| **TypeScript**     | Language                         |
+| **Prisma ORM**     | Type-safe DB access + migrations |
+| **PostgreSQL**     | Database (hosted on Supabase)    |
+| **argon2**         | Password hashing                 |
+| **JWT**            | Stateless authentication         |
+| **Passport**       | JWT strategy + guards            |
+| **Jest + ts-jest** | Unit testing                     |
 
 ---
 
 ## App Screens & Routes
 
-| Route | Screen | Status |
-|---|---|---|
-| `/` | Splash screen — animated logo, auto-navigate | ✅ |
-| `/onboarding` | 4-page swipeable intro | ✅ |
-| `/login` | Email + password login | ✅ |
-| `/register` | Email + password registration | ✅ |
-| `/update-profile` | Name, username, bio, role | ✅ |
-| `/student` | Student dashboard (5-tab) | ✅ |
-| `/teacher` | Teacher dashboard (5-tab) | ✅ |
-| `/chat` | Chat detail | ✅ (UI only) |
-| `/subscription` | Subscription plans | ✅ (UI only) |
-| `/payment` | Payment screen | ✅ (UI only) |
-| `/payment-success` | Payment success | ✅ (UI only) |
-| `/tutor/:id` | Tutor detail + offers | 🔲 Not built |
-| `/booking` | Booking flow | 🔲 Not built |
-| `/profile` | Own profile view/edit | 🔲 Not built |
+| Route              | Screen                                       | Status       |
+| ------------------ | -------------------------------------------- | ------------ |
+| `/`                | Splash screen — animated logo, auto-navigate | ✅           |
+| `/onboarding`      | 4-page swipeable intro                       | ✅           |
+| `/login`           | Email + password login                       | ✅           |
+| `/register`        | Email + password registration                | ✅           |
+| `/update-profile`  | Name, username, bio, role                    | ✅           |
+| `/student`         | Student dashboard (5-tab)                    | ✅           |
+| `/teacher`         | Teacher dashboard (5-tab)                    | ✅           |
+| `/chat`            | Chat detail                                  | ✅ (UI only) |
+| `/subscription`    | Subscription plans                           | ✅ (UI only) |
+| `/payment`         | Payment screen                               | ✅ (UI only) |
+| `/payment-success` | Payment success                              | ✅ (UI only) |
+| `/tutor/:id`       | Tutor detail + offers                        | 🔲 Not built |
+| `/booking`         | Booking flow                                 | 🔲 Not built |
+| `/profile`         | Own profile view/edit                        | 🔲 Not built |
 
 ---
 
@@ -383,13 +386,13 @@ flutter test
 
 ### Branch naming
 
-| Prefix | When |
-|---|---|
-| `feat/` | New feature |
-| `fix/` | Bug fix |
-| `api/` | Backend API work |
-| `docs/` | Documentation |
-| `refactor/` | Cleanup |
+| Prefix      | When             |
+| ----------- | ---------------- |
+| `feat/`     | New feature      |
+| `fix/`      | Bug fix          |
+| `api/`      | Backend API work |
+| `docs/`     | Documentation    |
+| `refactor/` | Cleanup          |
 
 ### Commit style
 
@@ -412,11 +415,11 @@ docs: update API reference for /user/tutor/:id
 
 ## Documentation
 
-| File | Contents |
-|---|---|
-| `README.md` | This file — app overview, structure, progress |
-| `_server/README.md` | API server documentation — endpoints, architecture, tests |
-| `docs.md` | Full developer reference — every pattern, how-to guide, troubleshooting |
+| File                | Contents                                                                |
+| ------------------- | ----------------------------------------------------------------------- |
+| `README.md`         | This file — app overview, structure, progress                           |
+| `_server/README.md` | API server documentation — endpoints, architecture, tests               |
+| `docs.md`           | Full developer reference — every pattern, how-to guide, troubleshooting |
 
 ---
 
