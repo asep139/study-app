@@ -1,12 +1,14 @@
 <div align="center">
 
-# 🎓 StudyApp
+<img src="lib/assets/images/logo.jpeg" width="120" alt="StudyApp Logo" />
+
+# StudyApp
+
+> this app totally made with ❤️(dan orang orang terganteng dan tersigma, tergila, tergakwaras apalah gw ketik apaan awokawokaowkaowk gw bakalan kasih ini ke AI aja dah daripada ngawur aowkaokoawkoakw)
 
 ### Peer-to-Peer Tutoring Marketplace
 
-*Connect with expert tutors. Learn on your terms.*
-
-<br/>
+_Connect with expert tutors. Learn on your terms._
 
 [![Flutter](https://img.shields.io/badge/Flutter-02569B?style=for-the-badge&logo=flutter&logoColor=white)](https://flutter.dev)
 [![Dart](https://img.shields.io/badge/Dart-0175C2?style=for-the-badge&logo=dart&logoColor=white)](https://dart.dev)
@@ -25,473 +27,352 @@
 
 ---
 
-## 📖 What is StudyApp?
+## What is StudyApp?
 
-**StudyApp** is a modern, decoupled educational platform designed to connect students directly with expert tutors. Instead of rigid, one-size-fits-all curriculums, StudyApp puts the learner in control — choose **what** to learn, **who** to learn from, and **when** to learn it.
+**StudyApp** is a modern peer-to-peer tutoring marketplace that connects students directly with expert tutors. Students choose what to learn, who to learn from, and when — on their own terms.
 
-> "Education is not the filling of a pail, but the lighting of a fire." — W.B. Yeats
+The app is split into two independent codebases:
 
-<br/>
+- **Flutter frontend** — cross-platform app (Android, iOS, Web)
+- **NestJS backend** — REST API backed by PostgreSQL on Supabase
 
-## ✨ Features
+See [`_server/README.md`](./_server/README.md) for detailed API documentation.
 
-| Feature | Description |
-|---|---|
-| 🔐 **JWT Authentication** | Secure login & registration with token-based auth |
-| 🔑 **Google Sign-In** | One-tap OAuth login via Google |
-| 👨‍🏫 **Tutor Profiles** | Browse and connect with expert tutors |
-| 🎓 **Student Dashboard** | Track learning progress and upcoming sessions |
-| 💬 **Real-time Chat** | Direct messaging between students and tutors |
-| 📦 **Subscription Plans** | Flexible plans for different learning needs |
-| 📱 **Cross-platform** | Flutter-powered: runs on Android, iOS, and Web |
+---
 
-<br/>
-
-## 🛠 Tech Stack
-
-### Frontend — Flutter (Dart)
-
-| Tool | Purpose |
-|---|---|
-| **Flutter 3.5+** | Cross-platform UI framework |
-| **Google Fonts** | Custom typography |
-| **Font Awesome Flutter** | Icon library |
-| **HTTP** | REST API communication |
-| **Google Sign-In** | OAuth authentication |
-| **Material 3** | Design system |
-
-### Backend — NestJS (TypeScript)
-
-| Tool | Purpose |
-|---|---|
-| **NestJS** | Modular Node.js framework |
-| **Prisma ORM** | Type-safe database access & migrations |
-| **PostgreSQL** | Relational database (hosted on Supabase) |
-| **JWT** | Stateless authentication tokens |
-| **Jest** | Unit & end-to-end testing |
-
-<br/>
-
-## 🏗 Architecture
+## Architecture
 
 ```
-StudyApp
-├── Flutter Frontend (Mobile / Web)
-│     └── Communicates via REST API ──────────────────┐
-│                                                      ▼
-└── NestJS Backend                           ┌─────────────────┐
-      ├── Auth Module (JWT + Google OAuth)   │   PostgreSQL DB  │
-      ├── User Module                        │  (via Supabase)  │
-      ├── Student Module                     └─────────────────┘
-      ├── Teacher Module
-      ├── Chat Module
-      └── Subscription Module
+┌──────────────────────────────────────────────────────────────┐
+│                   Flutter App (Client)                       │
+│                                                              │
+│  features/auth/    features/student/    features/teacher/    │
+│  features/chat/    features/subscription/                    │
+│                                                              │
+│  core/services/                                              │
+│    AuthService       ← all auth HTTP calls (login/register)  │
+│    AuthState         ← singleton: JWT token, userId, role    │
+│    UserApiService    ← all user HTTP calls (profile, etc.)   │
+│                                                              │
+│  core/themes/        AppColors · AppTypography · AppSizes    │
+│  core/widgets/       PrimaryButton · TextInput · AvatarWidget│
+│  routes/             named routes, Navigator.pushNamed(...)  │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ HTTP / JSON (REST)
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│              NestJS Backend  (_server/)                      │
+│   AuthModule · UserModule · PrismaModule                     │
+│   🔲 BookingModule · 🔲 ChatModule · 🔲 SubscriptionModule   │
+└──────────────────────────────┬───────────────────────────────┘
+                               │ SQL via Prisma ORM
+                               ▼
+┌──────────────────────────────────────────────────────────────┐
+│          PostgreSQL on Supabase                              │
+│  profiles · bookings · messages · reviews · transactions     │
+│  tutor_offers · tutor_availabilities · subjects · notifications│
+└──────────────────────────────────────────────────────────────┘
 ```
 
-**Frontend Architecture:** Feature-first modular design. Each feature (auth, chat, student, teacher) is self-contained with its own screens.
+---
 
-**Backend Architecture:** Domain-driven NestJS modules with Prisma handling all database operations. Each domain (auth, user, teacher, student, chat, subscription) is fully isolated.
-
-<br/>
-
-## 📂 Project Structure
+## Project Structure
 
 ```
 study-app/
 │
-├── lib/                          # Flutter Frontend
-│   ├── features/                 # Feature modules
-│   │   ├── auth/                 #   Login & registration screens
-│   │   ├── chat/                 #   Messaging screens
-│   │   ├── student/              #   Student dashboard & views
-│   │   └── teacher/              #   Tutor profile & views
-│   ├── core/                     # Shared utilities
-│   │   ├── constants/            #   App-wide constants
-│   │   ├── themes/               #   Material 3 theme config
-│   │   └── widgets/              #   Reusable UI components
-│   ├── models/                   # Shared data models (DTOs)
-│   └── routes/                   # App navigation & routing
+├── lib/                              # Flutter Frontend
+│   ├── main.dart                     # App entry point
+│   │
+│   ├── features/                     # Feature modules (screens + widgets)
+│   │   ├── auth/
+│   │   │   └── screens/
+│   │   │       ├── splash_screen.dart          ✅ done
+│   │   │       ├── onboarding_screen.dart      ✅ done
+│   │   │       ├── login_screen.dart           ✅ done
+│   │   │       ├── register_screen.dart        ✅ done
+│   │   │       └── update_profile_screen.dart  ✅ done
+│   │   │
+│   │   ├── student/
+│   │   │   └── screens/
+│   │   │       ├── student_dashboard.dart      ✅ done (5-tab nav)
+│   │   │       ├── course_detail_screen.dart   ✅ done (UI)
+│   │   │       └── live_class_screen.dart      ✅ done (UI)
+│   │   │
+│   │   ├── teacher/
+│   │   │   └── screens/
+│   │   │       └── teacher_dashboard.dart      ✅ done (5-tab nav)
+│   │   │
+│   │   ├── chat/
+│   │   │   └── screens/
+│   │   │       └── chat_detail_screen.dart     ✅ done (UI only, not wired to API)
+│   │   │
+│   │   ├── subscription/
+│   │   │   └── screens/
+│   │   │       ├── subscription_plans_screen.dart  ✅ done (UI only)
+│   │   │       ├── payment_screen.dart             ✅ done (UI only)
+│   │   │       └── payment_success_screen.dart     ✅ done (UI only)
+│   │   │
+│   │   └── test/                     # Test/playground screens
+│   │
+│   ├── core/
+│   │   ├── constants/
+│   │   │   └── app_config.dart       ✅ done (useMock toggle, apiUrl, timeout)
+│   │   │
+│   │   ├── services/
+│   │   │   ├── auth_service.dart     ✅ done (login, register, logout — centralized)
+│   │   │   ├── auth_state.dart       ✅ done (JWT singleton: token, userId, role)
+│   │   │   └── user_api_service.dart ✅ done (updateProfile)
+│   │   │
+│   │   ├── themes/
+│   │   │   ├── app_theme.dart        ✅ done
+│   │   │   ├── app_colors.dart       ✅ done (primary: #1479FF)
+│   │   │   ├── app_typography.dart   ✅ done
+│   │   │   └── app_sizes.dart        ✅ done
+│   │   │
+│   │   └── widgets/
+│   │       ├── primary_button.dart   ✅ done
+│   │       ├── text_input.dart       ✅ done
+│   │       ├── password_text_field.dart  ✅ done
+│   │       ├── avatar_widget.dart    ✅ done
+│   │       └── search_input.dart     ✅ done
+│   │
+│   ├── models/                       # Shared data models
+│   │   ├── user_model.dart           ✅ done
+│   │   ├── course_model.dart         ✅ done
+│   │   ├── teacher_model.dart        ✅ done
+│   │   └── live_class_model.dart     ✅ done
+│   │
+│   ├── routes/
+│   │   └── app_routes.dart           ✅ done (all named routes)
+│   │
+│   └── assets/images/
+│       └── logo.jpeg                 ✅ app logo
 │
-├── _server/                      # NestJS Backend
+├── _server/                          # NestJS Backend — see _server/README.md
 │   ├── src/
-│   │   ├── auth/                 #   JWT auth + Google OAuth
-│   │   ├── user/                 #   User management
-│   │   ├── student/              #   Student-related logic
-│   │   ├── teacher/              #   Teacher-related logic
-│   │   ├── chat/                 #   Messaging system
-│   │   ├── subscription/         #   Subscription plans
-│   │   ├── prisma.service.ts     #   Database connection
-│   │   └── main.ts               #   App entry point
+│   │   ├── auth/                     ✅ complete
+│   │   ├── user/                     ✅ complete
+│   │   └── generated/prisma/         ✅ auto-generated
 │   └── prisma/
-│       ├── schema.prisma         #   Database schema
-│       └── migrations/           #   Migration history
+│       ├── schema.prisma             ✅ complete (9 tables)
+│       └── migrations/
 │
-├── docs.md                       # Full architectural documentation
-└── pubspec.yaml                  # Flutter dependencies
+├── docs.md                           # Full architectural documentation
+├── pubspec.yaml                      # Flutter dependencies
+└── README.md                         # This file
 ```
-
-<br/>
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-Make sure you have the following installed:
-
-- [Flutter SDK](https://docs.flutter.dev/get-started/install) `^3.5.0`
-- [Node.js](https://nodejs.org/) `v18+` & npm
-- [Git](https://git-scm.com/)
-- A [Supabase](https://supabase.com/) project (for the PostgreSQL database)
 
 ---
 
-### 1️⃣ Clone the Repository
+## Current Progress
+
+### App (Flutter Frontend)
+
+#### ✅ Complete
+
+| Area                  | What's done                                                                        |
+| --------------------- | ---------------------------------------------------------------------------------- |
+| **Auth flow**         | Full end-to-end: splash → onboarding → login/register → update profile → dashboard |
+| **Auth service**      | Centralized `AuthService` — login, register, logout, mock mode for dev             |
+| **Auth state**        | `AuthState` singleton — stores JWT token, userId, email, role across the whole app |
+| **Mock mode**         | `AppConfig.useMock = true` — screens work without a live backend for development   |
+| **Login screen**      | Email + password form, error display, loading state                                |
+| **Register screen**   | Email + password + confirm, delegates to `AuthService`                             |
+| **Update profile**    | Full name, username, bio, role picker — calls `UserApiService.updateProfile`       |
+| **Student dashboard** | 5-tab nav: Home, Explore, Learning, Messages, Profile                              |
+| **Teacher dashboard** | 5-tab nav: Home, Courses, Students, Earnings, Profile                              |
+| **Chat UI**           | Full chat detail screen with message list + input (UI only)                        |
+| **Subscription UI**   | Plans screen (Free/Premium/Pro, monthly/yearly toggle)                             |
+| **Payment UI**        | Payment method selection + order summary                                           |
+| **Payment success**   | Animated success screen                                                            |
+| **Shared widgets**    | `PrimaryButton`, `TextInput`, `PasswordTextField`, `AvatarWidget`, `SearchInput`   |
+| **Theme system**      | Material 3, `AppColors`, `AppTypography`, `AppSizes`                               |
+| **Routing**           | All named routes in `AppRoutes`, navigator helpers                                 |
+
+#### 🔄 In Progress (branch: `api/expanding-the-api`)
+
+| Task                                 | Status                                                          |
+| ------------------------------------ | --------------------------------------------------------------- |
+| Centralized `AuthService` refactor   | ✅ done on this branch — replacing inline HTTP calls in screens |
+| `AppConfig` mock/live toggle         | ✅ done — `useMock` flag for dev without backend                |
+| Wiring auth screens to `AuthService` | ✅ login, register, update profile all use it                   |
+| Student dashboard API integration    | 🔄 in progress — real tutor data from `GET /user/tutors/all`    |
+
+#### 🔲 Todo (App)
+
+| Priority | Task                                                                                     |
+| -------- | ---------------------------------------------------------------------------------------- |
+| High     | Wire student dashboard to live API (tutor browse, search, filter)                        |
+| High     | Google Sign-In integration on login screen                                               |
+| High     | `AuthState` persistence — survive app kill/restart (SharedPreferences or secure storage) |
+| High     | Tutor detail screen — show profile + offers from `GET /user/tutor/:id`                   |
+| High     | Booking flow — select offer → confirm → payment                                          |
+| Medium   | Chat API integration — send/receive real messages                                        |
+| Medium   | Teacher dashboard API integration — show real bookings, students                         |
+| Medium   | Profile screen — display and edit own profile                                            |
+| Medium   | Subscription backend integration                                                         |
+| Medium   | Tutor availability management (teacher side)                                             |
+| Low      | Push notifications                                                                       |
+| Low      | Review/rating UI                                                                         |
+| Low      | Offline mode / error states                                                              |
+| Low      | Dark mode                                                                                |
+| Low      | iOS build testing                                                                        |
+
+---
+
+### API (NestJS Backend)
+
+See [`_server/README.md`](./_server/README.md) for full details.
+
+| Module                                    | Status         |
+| ----------------------------------------- | -------------- |
+| Auth (signup, login, Google OAuth)        | ✅ Complete    |
+| User profiles (CRUD, tutor search/filter) | ✅ Complete    |
+| Unit tests — 62 tests, 5 suites           | ✅ All passing |
+| Booking module                            | 🔲 Not started |
+| Chat/messaging module                     | 🔲 Not started |
+| Subscription module                       | 🔲 Not started |
+| Review module                             | 🔲 Not started |
+| Notification module                       | 🔲 Not started |
+
+---
+
+## Tech Stack
+
+### Frontend — Flutter (Dart)
+
+| Tool                     | Purpose                     |
+| ------------------------ | --------------------------- |
+| **Flutter 3.5+**         | Cross-platform UI framework |
+| **Dart**                 | Language                    |
+| **HTTP**                 | REST API calls              |
+| **Google Sign-In**       | OAuth                       |
+| **Google Fonts**         | Typography                  |
+| **Font Awesome Flutter** | Icons                       |
+| **Material 3**           | Design system               |
+
+### Backend — NestJS (TypeScript)
+
+| Tool               | Purpose                          |
+| ------------------ | -------------------------------- |
+| **NestJS**         | Modular Node.js framework        |
+| **TypeScript**     | Language                         |
+| **Prisma ORM**     | Type-safe DB access + migrations |
+| **PostgreSQL**     | Database (hosted on Supabase)    |
+| **argon2**         | Password hashing                 |
+| **JWT**            | Stateless authentication         |
+| **Passport**       | JWT strategy + guards            |
+| **Jest + ts-jest** | Unit testing                     |
+
+---
+
+## App Screens & Routes
+
+| Route              | Screen                                       | Status       |
+| ------------------ | -------------------------------------------- | ------------ |
+| `/`                | Splash screen — animated logo, auto-navigate | ✅           |
+| `/onboarding`      | 4-page swipeable intro                       | ✅           |
+| `/login`           | Email + password login                       | ✅           |
+| `/register`        | Email + password registration                | ✅           |
+| `/update-profile`  | Name, username, bio, role                    | ✅           |
+| `/student`         | Student dashboard (5-tab)                    | ✅           |
+| `/teacher`         | Teacher dashboard (5-tab)                    | ✅           |
+| `/chat`            | Chat detail                                  | ✅ (UI only) |
+| `/subscription`    | Subscription plans                           | ✅ (UI only) |
+| `/payment`         | Payment screen                               | ✅ (UI only) |
+| `/payment-success` | Payment success                              | ✅ (UI only) |
+| `/tutor/:id`       | Tutor detail + offers                        | 🔲 Not built |
+| `/booking`         | Booking flow                                 | 🔲 Not built |
+| `/profile`         | Own profile view/edit                        | 🔲 Not built |
+
+---
+
+## Getting Started
+
+### Prerequisites
+
+- [Flutter SDK](https://docs.flutter.dev/get-started/install) `^3.5.0`
+- [Node.js](https://nodejs.org/) `v18+` & npm
+- [Supabase](https://supabase.com/) project (PostgreSQL)
+- [Git](https://git-scm.com/)
+
+### 1. Clone
 
 ```bash
 git clone https://github.com/hiyokun-d/study-app.git
 cd study-app
 ```
 
----
-
-### 2️⃣ Frontend Setup (Flutter)
+### 2. Backend
 
 ```bash
-# Install Flutter dependencies
-flutter pub get
-
-# Run the app (make sure a device/emulator is running)
-flutter run
-
-# Or target a specific platform
-flutter run -d chrome      # Web
-flutter run -d android     # Android
-```
-
----
-
-### 3️⃣ Backend Setup (NestJS)
-
-```bash
-# Navigate to the server directory
 cd _server
-
-# Install Node dependencies
 npm install
-
-# Set up environment variables
-cp .env.example .env
-# Open .env and fill in:
-#   DATABASE_URL=...   (Supabase pooled connection)
-#   DIRECT_URL=...     (Supabase direct connection)
-#   JWT_SECRET=...     (a long random secret)
-
-# Generate the Prisma client
+cp .env.example .env       # fill in DATABASE_URL, DIRECT_URL, JWT_SECRET, GOOGLE_CLIENT_ID
 npx prisma generate
-
-# Run database migrations
 npx prisma migrate deploy
-
-# Start the development server (hot reload)
-npm run start:dev
+npm run start:dev           # API at http://localhost:3000
 ```
 
-The API will be available at `http://localhost:3000`.
+### 3. Flutter App
 
-<br/>
+```bash
+# From project root
+flutter pub get
+flutter run -d android     # Android emulator (API URL is pre-configured)
+flutter run -d chrome      # Web
+flutter run                # First available device
+```
 
-## 📡 API Reference
+> **Note:** The app is currently in **mock mode** (`AppConfig.useMock = true`). Screens work without a running backend. To use the real API, set `useMock = false` in `lib/core/constants/app_config.dart`.
 
-> **Base URL:** `http://localhost:3000`
-> **Auth:** Protected routes require `Authorization: Bearer <access_token>` in the header.
+> **Android emulator:** API URL is `http://10.0.2.2:3000` — that's how Android emulators reach `localhost` on the host machine.
 
 ---
 
-### 🔐 Auth — `/auth`
+## Key Patterns
 
-#### `GET /auth`
-Health check for the auth route.
+### Auth flow (Frontend)
 
 ```
-Response 200: "You're at the right path, continue!"
+/login → AuthService.login() → AuthState.setFromResponse() → navigate to /student or /teacher
+/register → AuthService.register() → AuthState.setFromResponse() → navigate to /update-profile
+/update-profile → UserApiService.updateProfile() → AuthState.role = result → navigate to dashboard
 ```
+
+### Adding a new API call (Flutter)
+
+1. Add method to `UserApiService` (or create a new service)
+2. Check `AuthState.instance.isLoggedIn` for protected calls
+3. Pass `AuthState.instance.authHeaders` for JWT
+4. Return a result object — never throw
+5. Handle `result.success` / `result.errorMessage` in the widget
+
+### Adding a new API endpoint (Backend)
+
+1. Add method to the service (`user.service.ts` or create new module)
+2. Add route to the controller with optional `@UseGuards(AuthGuard('jwt'))`
+3. Write tests (service: mock Prisma; controller: mock service)
+4. Run `npm test`
+
+See `docs.md` for complete step-by-step guides.
 
 ---
 
-#### `POST /auth/signup`
-Register a new user account.
+## Testing
 
-**Request Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "securepassword",
-  "role": "STUDENT"
-}
-```
-> `role` must be `"STUDENT"` or `"TUTOR"`
-
-**Response `201`:**
-```json
-{
-  "message": "Signup successful",
-  "access_token": "eyJhbGci...",
-  "user": {
-    "id": "uuid",
-    "email": "john@example.com",
-    "role": "STUDENT"
-  }
-}
-```
-
----
-
-#### `POST /auth/login`
-Log in with email and password.
-
-**Request Body:**
-```json
-{
-  "email": "john@example.com",
-  "password": "securepassword"
-}
-```
-
-**Response `200`:**
-```json
-{
-  "message": "Login successful",
-  "access_token": "eyJhbGci...",
-  "user": {
-    "id": "uuid",
-    "email": "john@example.com",
-    "role": "STUDENT"
-  }
-}
-```
-
----
-
-#### `POST /auth/google`
-Sign in or register via Google OAuth.
-
-**Request Body:**
-```json
-{
-  "idToken": "google-id-token-from-client",
-  "role": "STUDENT"
-}
-```
-
-**Response `200`:**
-```json
-{
-  "message": "Google login successful",
-  "access_token": "eyJhbGci...",
-  "user": {
-    "id": "uuid",
-    "email": "john@gmail.com",
-    "role": "STUDENT",
-    "full_name": "John Doe",
-    "avatar_url": "https://..."
-  }
-}
-```
-
----
-
-### 👤 User — `/user`
-
-#### `GET /user/tutors/all`
-Returns all tutor profiles.
-
-```
-GET /user/tutors/all
-Response 200: [ { ...tutorProfile }, ... ]
-```
-
----
-
-#### `GET /user/student`
-Returns all student profiles.
-
-```
-GET /user/student
-Response 200: [ { ...studentProfile }, ... ]
-```
-
----
-
-#### `GET /user/tutors`
-Search and filter tutors.
-
-**Query Parameters:**
-
-| Param | Type | Description |
-|---|---|---|
-| `search` | `string` | Search by name or keyword |
-| `subject` | `string` | Filter by subject |
-| `maxPrice` | `number` | Max price per hour |
-
-```
-GET /user/tutors?search=math&subject=algebra&maxPrice=150000
-Response 200: [ { ...tutorProfile }, ... ]
-```
-
----
-
-#### `GET /user/tutor/:id`
-Get detailed profile + offers for a single tutor.
-
-```
-GET /user/tutor/uuid-here
-Response 200: { ...tutorProfile, offers: [ ...tutorOffers ] }
-```
-
----
-
-#### `PATCH /user/update/profile` 🔒 *Auth Required*
-Update the authenticated user's profile. All fields are optional.
-
-**Headers:**
-```
-Authorization: Bearer <access_token>
-Content-Type: application/json
-```
-
-**Request Body:**
-```json
-{
-  "full_name": "John Doe",
-  "username": "john_doe",
-  "bio": "Passionate math tutor with 5 years experience.",
-  "avatar_url": "https://example.com/avatar.png",
-  "role": "TUTOR"
-}
-```
-
-**Response `200`:**
-```json
-{
-  "message": "Profile updated",
-  "user": {
-    "id": "uuid",
-    "email": "john@example.com",
-    "full_name": "John Doe",
-    "username": "john_doe",
-    "bio": "Passionate math tutor with 5 years experience.",
-    "avatar_url": "https://example.com/avatar.png",
-    "role": "TUTOR"
-  }
-}
-```
-
----
-
-### Implementing API Calls in Flutter
-
-The app uses a centralized service pattern. All user API calls go through `UserApiService` and all auth API calls manage state via `AuthState`.
-
-**File structure:**
-```
-lib/core/services/
-├── auth_state.dart        # Holds access_token, userId, role — use anywhere
-└── user_api_service.dart  # Global user API methods (updateProfile, etc.)
-```
-
-#### Using `updateProfile` anywhere in the app
-
-```dart
-import 'package:myapp/core/services/user_api_service.dart';
-
-// Call from any widget — no need to rewrite the HTTP logic
-final result = await UserApiService.instance.updateProfile(
-  username: 'john_doe',
-  fullName: 'John Doe',
-  bio: 'I love math',
-  role: 'STUDENT',         // or 'TUTOR'
-  avatarUrl: 'https://...', // optional
-);
-
-if (result.success) {
-  final updatedUser = result.user; // Map<String, dynamic>
-  print(updatedUser?['username']); // 'john_doe'
-} else {
-  print(result.errorMessage); // user-friendly error string
-}
-```
-
-#### Using `AuthState` for the JWT token
-
-`AuthState` is a singleton that holds the logged-in user's token and info. Set it once after login, read it anywhere.
-
-```dart
-import 'package:myapp/core/services/auth_state.dart';
-
-// After login — store the token
-AuthState.instance.setFromResponse(responseData); // pass the decoded JSON body
-
-// Read token info anywhere
-print(AuthState.instance.accessToken);
-print(AuthState.instance.role); // 'STUDENT' or 'TUTOR'
-print(AuthState.instance.isLoggedIn); // true / false
-
-// Get headers for authenticated requests
-final headers = AuthState.instance.authHeaders;
-// → { 'Content-Type': 'application/json', 'Authorization': 'Bearer eyJ...' }
-
-// Clear on logout
-AuthState.instance.clear();
-```
-
-#### Adding a new API method
-
-Follow this pattern when adding new endpoints to `UserApiService`:
-
-```dart
-// In lib/core/services/user_api_service.dart
-
-Future<SomeResult> getSomething(String id) async {
-  if (!AuthState.instance.isLoggedIn) {
-    return SomeResult.error('Not authenticated');
-  }
-
-  try {
-    final response = await http.get(
-      Uri.parse('${AppConfig.API_URL}/user/something/$id'),
-      headers: AuthState.instance.authHeaders,
-    );
-
-    final data = jsonDecode(response.body) as Map<String, dynamic>;
-
-    if (response.statusCode == 200) {
-      return SomeResult.success(data);
-    }
-    return SomeResult.error(data['message']?.toString() ?? 'Failed');
-  } catch (e) {
-    return SomeResult.error('Network error: $e');
-  }
-}
-```
-
-<br/>
-
-## 🧪 Testing
-
-### Running Tests
-
-#### Backend (NestJS)
+### Backend (62 tests · all passing)
 
 ```bash
 cd _server
-
-npm run test          # Run all unit tests
-npm run test:watch    # Watch mode (re-runs on file save)
-npm run test:cov      # Unit tests + coverage report
-npm run test:e2e      # End-to-end tests
+npm run test         # all unit tests
+npm run test:watch   # watch mode
+npm run test:cov     # with coverage
+npm run test:e2e     # end-to-end
 ```
 
-#### Frontend (Flutter)
+### Flutter
 
 ```bash
 flutter test
@@ -499,71 +380,50 @@ flutter test
 
 ---
 
-### Backend Test Coverage
+## GitHub Collaboration Guide
 
-The backend has **62 unit tests** across 5 test suites. Every service method and controller endpoint is covered. All database calls are mocked via `PrismaService` — no real DB connection needed to run tests.
+**Never push directly to `main`.** All changes go through Feature Branch + Pull Request.
 
-#### `auth.service.spec.ts` — 18 tests
+### Branch naming
 
-| Group | What's tested |
-|---|---|
-| `signUp` | Creates user, defaults role to `STUDENT`, uppercases role, hashes password (never stores plaintext), rejects duplicate email |
-| `login` | Returns tokens on valid credentials, throws on unknown email, throws on wrong password, verifies against stored hash |
-| `googleLogin` | Creates new user if none exists, reuses existing account, updates profile when `full_name`/`avatar_url` is missing, throws on invalid token, throws when Google payload has no email |
+| Prefix      | When             |
+| ----------- | ---------------- |
+| `feat/`     | New feature      |
+| `fix/`      | Bug fix          |
+| `api/`      | Backend API work |
+| `docs/`     | Documentation    |
+| `refactor/` | Cleanup          |
 
-#### `auth.controller.spec.ts` — 8 tests
+### Commit style
 
-| Endpoint | What's tested |
-|---|---|
-| `GET /auth` | Returns path confirmation string |
-| `POST /auth/signup` | Delegates to service with correct args, passes `undefined` role when omitted, returns service response |
-| `POST /auth/login` | Delegates to service, propagates errors |
-| `POST /auth/google` | Delegates to service with token + role, propagates errors |
+```
+feat: add tutor detail screen
+fix: resolve login crash on empty password
+api: add booking module with create endpoint
+docs: update API reference for /user/tutor/:id
+```
 
-#### `user.service.spec.ts` — 24 tests
+### PR process
 
-| Group | What's tested |
-|---|---|
-| `getAllTutorProfile` | Returns list, returns empty array, selects correct fields |
-| `getAllStudentProfile` | Returns list, returns empty array |
-| `getTutorFilteredBy` | No filters, search query, subject filter, maxPrice filter, all filters combined, no extra fields when no filters, orders by `created_at desc` |
-| `getTutorDetailProfile` | Returns tutor with active offers, only queries `is_active: true` offers, throws `404` when not found |
-| `updateProfile` | Updates and returns profile, uppercases role, skips role field when not provided, sets `updated_at` timestamp, throws `400` on empty `userId`, throws `404` when user doesn't exist, supports partial updates |
-
-#### `user.controller.spec.ts` — 12 tests
-
-| Endpoint | What's tested |
-|---|---|
-| `GET /user` | Returns message and timestamp |
-| `GET /user/tutors/all` | Delegates to service |
-| `GET /user/student` | Delegates to service |
-| `GET /user/tutors` | Passes all query params, parses `maxPrice` string → number, passes `undefined` when params absent |
-| `GET /user/tutor/:id` | Returns tutor detail, propagates `404` |
-| `PATCH /user/update/profile` | Resolves `userId` from `req.user.userId`, falls back to `.sub`, falls back to `.id`, throws `401` when all absent, propagates service errors |
+1. Push branch: `git push origin feat/your-feature`
+2. Open PR on GitHub
+3. Describe what and why
+4. Wait for review → address feedback
+5. Squash-merge into `main`
 
 ---
 
-### Test Configuration
+## Documentation
 
-Tests use `@nestjs/testing` with Jest + ts-jest. The jest config in `package.json` includes two key settings that make it work with this project:
+| File                | Contents                                                                |
+| ------------------- | ----------------------------------------------------------------------- |
+| `README.md`         | This file — app overview, structure, progress                           |
+| `_server/README.md` | API server documentation — endpoints, architecture, tests               |
+| `docs.md`           | Full developer reference — every pattern, how-to guide, troubleshooting |
 
-```json
-"moduleNameMapper": {
-  "^src/(.*)$": "<rootDir>/$1",
-  "^(\\.{1,2}/.*)\\.js$": "$1"
-}
-```
+---
 
-- `src/` alias maps to the `rootDir` so absolute imports resolve correctly
-- `.js` extension stripping handles the ESM-style imports in the generated Prisma client
-
-<br/>
-
-## 👥 Contributors
-
-Thanks to these amazing people who built StudyApp together!
-
-<br/>
+## Contributors
 
 <div align="center">
 
@@ -571,74 +431,17 @@ Thanks to these amazing people who built StudyApp together!
 
 </div>
 
-> Want to contribute? Read the [collaboration guide](#-github-collaboration-guide) below!
-
-<br/>
-
-## 🤝 GitHub Collaboration Guide
-
-To keep code quality high and avoid conflicts, everyone follows this workflow:
-
-### The Golden Rule
-
-> **Never push directly to `main`.** All changes must go through a Feature Branch + Pull Request.
-
 ---
 
-### Branching Strategy
+## License
 
-| Branch Prefix | When to Use |
-|---|---|
-| `feat/` | New features — `feat/tutor-profile-page` |
-| `fix/` | Bug fixes — `fix/login-crash-on-android` |
-| `docs/` | Documentation — `docs/update-setup-guide` |
-| `refactor/` | Code cleanup — `refactor/auth-module` |
-
-```bash
-# Create and switch to a feature branch
-git checkout -b feat/my-feature-name
-```
-
----
-
-### Commit Message Style
-
-Follow this concise, action-based format:
-
-```
-feat: add social login with Google
-fix: resolve text overflow on tutor card
-docs: update backend setup instructions
-refactor: simplify auth token validation
-```
-
----
-
-### Pull Request Process
-
-1. **Push your branch:** `git push origin feat/your-feature-name`
-2. **Open a PR** on GitHub → "Compare & pull request"
-3. **Describe your changes** — what you did and why
-4. **Wait for review** — address any feedback
-5. **Merge** — once approved, squash-merge into `main`
-
-<br/>
-
-## 📖 Full Documentation
-
-For the complete architectural breakdown, API contracts, database schema, and design decisions, read the **[docs.md](./docs.md)** file.
-
-<br/>
-
-## 📄 License
-
-This project is currently under development and not yet licensed for public distribution. Contact the repository owner for licensing inquiries.
+Under development. Not licensed for public distribution. Contact the repository owner for licensing inquiries.
 
 ---
 
 <div align="center">
 
-Made with ❤️ by the StudyApp team — **keep learning, keep building!**
+Made with care by the StudyApp team — **keep learning, keep building.**
 
 [![GitHub](https://img.shields.io/badge/GitHub-hiyokun--d%2Fstudy--app-181717?style=flat-square&logo=github)](https://github.com/hiyokun-d/study-app)
 
