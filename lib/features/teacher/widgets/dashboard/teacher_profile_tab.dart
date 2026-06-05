@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lern/core/services/auth_state.dart';
 
 class TeacherProfileTab extends StatelessWidget {
   const TeacherProfileTab({super.key});
@@ -81,8 +82,12 @@ class TeacherProfileTab extends StatelessWidget {
                   iconColor: Colors.redAccent,
                   labelColor: Colors.redAccent,
                   showDivider: false,
-                  onTap: () {
+                  onTap: () async {
                     // TODO: Handle logout logic
+                    await AuthState.instance.clear();
+
+                    if (!context.mounted) return;
+                    Navigator.of(context).pushNamedAndRemoveUntil('/register', (route) => false);
                   },
                 ),
               ],

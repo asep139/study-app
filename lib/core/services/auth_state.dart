@@ -106,7 +106,7 @@ class AuthState extends ChangeNotifier {
   // Clear on logout
   // ---------------------------------------------------------------------------
 
-  void clear() {
+  Future<void> clear() async {
     accessToken = null;
     userId = null;
     email = null;
@@ -115,7 +115,7 @@ class AuthState extends ChangeNotifier {
     _fullName = null;
     _coinsBalance = 0;
     avatarUrl = null;
-    _clearPrefs();
+    await _clearPrefs();
     notifyListeners();
   }
 
@@ -146,7 +146,7 @@ class AuthState extends ChangeNotifier {
     if (avatarUrl != null) await prefs.setString(_kAvatarUrl, avatarUrl!);
   }
 
-  void _clearPrefs() async {
+  Future<void> _clearPrefs() async {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_kToken);
     await prefs.remove(_kUserId);
